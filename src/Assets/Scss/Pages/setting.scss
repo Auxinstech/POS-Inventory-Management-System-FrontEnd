@@ -1,0 +1,35 @@
+.setting {
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+
+    .setting-menu {
+        width: 250px;
+        background: #fff;
+        border-right: 1px solid #d5d5d5;
+        height: calc(100vh - 70px);
+        overflow: auto;
+
+        .setting-menu-item {
+            padding: 10px;
+            transition: 0.5s ease all;
+            border-bottom: 1px solid #d5d5d5;
+            font-size: 12px;
+            border-left: 5px solid transparent;
+            color: #575757;
+
+            &:hover {
+                background-color: #f9f9f9;
+                cursor: pointer;
+            }
+
+            &.active {
+                border-left: 5px solid #c1121f;
+            }
+        }
+    }
+
+    .setting-form {
+        width: 100%;
+    }
+}

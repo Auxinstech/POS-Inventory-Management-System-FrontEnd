@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/static/css/main.93c878b2.css",
+    "main.js": "/static/js/main.5574b47f.js",
+    "static/js/453.9345634d.chunk.js": "/static/js/453.9345634d.chunk.js",
+    "static/media/segoeuithis.ttf": "/static/media/segoeuithis.a732fcf595dcf938faef.ttf",
+    "static/media/FoodLift-Red.png": "/static/media/FoodLift-Red.084a7afd1f409d068737.png",
+    "static/media/login-bg.jpg": "/static/media/login-bg.ad43cd4fead0348d2557.jpg",
+    "index.html": "/index.html",
+    "main.93c878b2.css.map": "/static/css/main.93c878b2.css.map",
+    "main.5574b47f.js.map": "/static/js/main.5574b47f.js.map",
+    "453.9345634d.chunk.js.map": "/static/js/453.9345634d.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.93c878b2.css",
+    "static/js/main.5574b47f.js"
+  ]
+}

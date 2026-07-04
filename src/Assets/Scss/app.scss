@@ -1,0 +1,82 @@
+@use "sass:map";
+
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+
+@import url("./bootstrap.scss");
+
+@import url("./Pages/login.scss");
+@import url("./Pages/home.scss");
+@import url("./Pages/orders.scss");
+@import url("./Pages/menu.scss");
+@import url("./Pages/form.scss");
+@import url("./Pages/manage.scss");
+@import url("./Pages/setting.scss");
+@import url("./Pages/invoice.scss");
+
+@import url("./Components/header.scss");
+@import url("./Components/aside.scss");
+@import url("./Components/image-picker.scss");
+@import url("./Components/days-input.scss");
+@import url("./Components/loader.scss");
+
+* {
+  font-family: "Segoe UI Custom", sans-serif;
+}
+
+@font-face {
+  font-family: "Segoe UI Custom";
+  src: url("../../../public/fonts/segoeuithis.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.authLayout {
+  background-color: #f9f7f3;
+  min-height: 100vh;
+  padding: 0;
+
+  .content {
+    overflow: auto;
+    width: calc(100% - 80px);
+    position: absolute;
+    right: 0;
+    top: 70px;
+    min-height: calc(100vh - 70px);
+    .menu {
+      background-color: white;
+    }
+  }
+}
+
+.custom-hover:hover {
+  background-color: #f8f9fa; /* Bootstrap light background */
+  color: #0d6efd; /* Keep Bootstrap primary text color */
+}
+
+.breadcrumb {
+  --bs-breadcrumb-divider: '>';
+
+  .breadcrumb-item {
+    color: rgb(119, 119, 119);
+
+    a {
+      color: rgb(73, 73, 73);
+      text-decoration: none;   // remove underline
+
+      &:hover,
+      &:focus {
+        text-decoration: none; // prevent Bootstrap hover underline
+        color: #000;           // stronger contrast on hover
+      }
+    }
+  }
+
+  .breadcrumb-item.active {
+    color: #000;
+    font-weight: 600;
+  }
+}
+
+.cursur-pointer {
+  cursor: pointer;
+}
