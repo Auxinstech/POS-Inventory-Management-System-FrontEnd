@@ -214,6 +214,10 @@ const Store = () => {
   });
   const [allowCOD, setAllowCOD] = useState(false);
 
+  // Delivery Options
+  const [disableDelivery, setDisableDelivery] = useState(false);
+  const [disablePickup, setDisablePickup] = useState(false);
+
   // Store Details State
   const [storeDetails, setStoreDetails] = useState<StoreDetails>({
     name: "",
@@ -226,6 +230,11 @@ const Store = () => {
   // Strict Mode State
   const [allowOrdersFromAllowedPostCodes, setAllowOrdersFromAllowedPostCodes] =
     useState(false);
+
+  // Public Site
+  const [siteLogo, setSiteLogo] = useState("");
+  const [siteColor, setSiteColor] = useState("#000000");
+  console.log(siteLogo);
 
   // --------------------------------------------------------------------------
   // Helper Functions
@@ -251,12 +260,30 @@ const Store = () => {
   // Effect Hooks - Sync settings to local state
   // --------------------------------------------------------------------------
 
-  // Sync COD setting
+  // Sync Delivery Options
   useEffect(() => {
     const findAllowCOD = settings.find((x) => x.key === "allowCOD");
     if (findAllowCOD?.value) {
       const parsedAlllowCOD = JSON.parse(findAllowCOD.value);
       if (parsedAlllowCOD) setAllowCOD(parsedAlllowCOD);
+    }
+  }, [settings]);
+
+  useEffect(() => {
+    const findAllowDelivery = settings.find(
+      (x) => x.key === "disable_delivery",
+    );
+    if (findAllowDelivery?.value) {
+      const parsedAllowDelivery = JSON.parse(findAllowDelivery.value);
+      if (parsedAllowDelivery) setDisableDelivery(parsedAllowDelivery);
+    }
+  }, [settings]);
+
+  useEffect(() => {
+    const findAllowPickup = settings.find((x) => x.key === "disable_pickup");
+    if (findAllowPickup?.value) {
+      const parsedAllowPickup = JSON.parse(findAllowPickup.value);
+      if (parsedAllowPickup) setDisablePickup(parsedAllowPickup);
     }
   }, [settings]);
 
@@ -355,6 +382,21 @@ const Store = () => {
     const colorSetting = settings.find((x) => x.key === "default_color");
     if (colorSetting?.value) {
       setSelectedColor(colorSetting.value);
+    }
+  }, [settings]);
+
+  // Sync Site Color setting
+  useEffect(() => {
+    const siteColorSetting = settings.find((x) => x.key === "site_color");
+    if (siteColorSetting?.value) {
+      setSiteColor(siteColorSetting.value);
+    }
+  }, [settings]);
+
+  useEffect(() => {
+    const siteLogo = settings.find((x) => x.key === "public_site_logo");
+    if (siteLogo?.value) {
+      setSiteLogo(siteLogo.value);
     }
   }, [settings]);
 
@@ -647,6 +689,21 @@ const Store = () => {
     }
   };
 
+  const handleSaveSiteColor = () => {
+    dispatch(
+      changeSetting({
+        key: "site_color",
+        value: siteColor.toString(),
+        status: "active",
+        store_id: 0,
+        user_id: 0,
+      }),
+    );
+    if (selected_store !== undefined && selected_store !== null) {
+      dispatch(getStoreSettings(selected_store));
+    }
+  };
+
   const handleSaveFontSize = () => {
     dispatch(
       changeSetting({
@@ -835,12 +892,34 @@ const Store = () => {
     );
   };
 
-  // COD Handlers
+  // Delivery Options Handlers
   const handleSaveAllowCOD = async () => {
     await dispatch(
       changeSetting({
         key: "allowCOD",
         value: allowCOD.toString(),
+        status: "active",
+        store_id: 0,
+        user_id: 0,
+      }),
+    );
+  };
+  const handleSaveDisableDelivery = async () => {
+    await dispatch(
+      changeSetting({
+        key: "disable_delivery",
+        value: disableDelivery.toString(),
+        status: "active",
+        store_id: 0,
+        user_id: 0,
+      }),
+    );
+  };
+  const handleSaveDisablePickup = async () => {
+    await dispatch(
+      changeSetting({
+        key: "disable_pickup",
+        value: disablePickup.toString(),
         status: "active",
         store_id: 0,
         user_id: 0,
@@ -854,6 +933,20 @@ const Store = () => {
       changeSetting({
         key: "allow_orders_from_allowed_post_codes",
         value: allowOrdersFromAllowedPostCodes.toString(),
+        status: "active",
+        store_id: 0,
+        user_id: 0,
+      }),
+    );
+  };
+
+  // Site logo
+
+  const handleSavePublicSiteLogo = async () => {
+    await dispatch(
+      changeSetting({
+        key: "public_site_logo",
+        value: siteLogo,
         status: "active",
         store_id: 0,
         user_id: 0,
@@ -878,6 +971,10 @@ const Store = () => {
     await handleSaveStripe();
     await handleSaveAllowCOD();
     await handleSaveAllowOrdersFromAllowedPostCodes();
+    await handleSavePublicSiteLogo();
+    await handleSaveSiteColor();
+    await handleSaveDisableDelivery();
+    await handleSaveDisablePickup();
   };
 
   // Helper function to render accordion sections
@@ -1227,14 +1324,14 @@ const Store = () => {
                 </FloatingLabel>
               </Col>
               <Col md={4}>
-                <FloatingLabel controlId="Email" label="Email Number">
+                <FloatingLabel controlId="Email" label="Email Address">
                   <Form.Control
                     size="sm"
                     type="tel"
                     name="email"
                     value={storeDetails.email}
                     onChange={handleInputChange}
-                    placeholder="Email Number"
+                    placeholder="Email Address"
                   />
                 </FloatingLabel>
               </Col>
@@ -1272,14 +1369,14 @@ const Store = () => {
 
         {/* COD Section */}
         {renderAccordion(
-          "COD",
+          "Delivery Options",
           <Row>
             <Row className="mb-3">
-              <Col md={4}>
+              <Col md={6}>
                 <Form.Check
                   type="switch"
                   id="cod-switch"
-                  label="Enable COD"
+                  label="Enable Cash Payment"
                   checked={allowCOD}
                   onChange={(e) => {
                     setAllowCOD(e.target.checked);
@@ -1287,12 +1384,163 @@ const Store = () => {
                   className="mb-0"
                 />
               </Col>
-              <Col md={4}>
+              <Col md={6}>
                 <p>
                   Disabling this will remove the COD functionality from the
                   store. Make sure to set up the payment gateway before
                   disabling this feature.
                 </p>
+              </Col>
+            </Row>
+            {/* New Option 1: Disable Delivery Orders */}
+            <Row className="mb-3">
+              <Col md={6}>
+                <Form.Check
+                  type="switch"
+                  id="delivery-switch"
+                  label="Disable Delivery Orders"
+                  checked={disableDelivery}
+                  onChange={(e) => {
+                    setDisableDelivery(e.target.checked);
+                  }}
+                  className="mb-0"
+                />
+              </Col>
+              <Col md={6}>
+                <p>
+                  Disabling this will prevent customers from placing delivery
+                  orders. Only pickup orders will be available.
+                </p>
+              </Col>
+            </Row>
+            {/* New Option 2: Disable Pickup Orders */}
+            <Row className="mb-3">
+              <Col md={6}>
+                <Form.Check
+                  type="switch"
+                  id="pickup-switch"
+                  label="Disable Pickup Orders"
+                  checked={disablePickup}
+                  onChange={(e) => {
+                    setDisablePickup(e.target.checked);
+                  }}
+                  className="mb-0"
+                />
+              </Col>
+              <Col md={6}>
+                <p>
+                  Disabling this will prevent customers from placing pickup
+                  orders. Only delivery orders will be available.
+                </p>
+              </Col>
+            </Row>
+            <Row className="d-flex align-items-center mb-2">
+              <Col md={6} className="d-flex align-items-center gap-2">
+                <Form.Check
+                  type="switch"
+                  id="allow-orders-from-allowed-post-codes"
+                  label=" Only Allow Orders from Delivery Configuraton Post Codes"
+                  checked={allowOrdersFromAllowedPostCodes}
+                  onChange={(e) => {
+                    setAllowOrdersFromAllowedPostCodes(e.target.checked);
+                  }}
+                  className="mb-0"
+                />
+              </Col>
+              <Col md={6}>
+                <p>
+                  Disabling this will allow orders from any post code. Make sure
+                  to set up the delivery configuration before disabling this
+                  feature.
+                </p>
+              </Col>
+            </Row>
+            ,
+          </Row>,
+        )}
+
+        {/* Public Site Section */}
+        {renderAccordion(
+          "Public Site",
+          <Row>
+            <Row className="mb-3">
+              <Col md={4}>
+                <Form.Group>
+                  <Form.Label>Public Site Logo URL</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter logo URL (e.g., https://example.com/logo.png)"
+                    value={siteLogo}
+                    onChange={(e) => setSiteLogo(e.target.value)}
+                  />
+                  <Form.Text className="text-muted">
+                    Enter the URL of your logo image. Recommended size:
+                    200x50px.
+                  </Form.Text>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                {siteLogo && (
+                  <div>
+                    <p>Current Logo:</p>
+                    <img
+                      src={siteLogo}
+                      alt="Site Logo"
+                      style={{ maxHeight: "50px", maxWidth: "200px" }}
+                    />
+                  </div>
+                )}
+              </Col>
+            </Row>
+            {/* New Option 3: Upload Logo Image */}
+            {/* <Row className="mb-3">
+              <Col md={4}>
+                <Form.Group>
+                  <Form.Label>Public Site Logo</Form.Label>
+                  <Form.Control
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        // Handle file upload logic here
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setSiteLogo(reader.result);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                  <Form.Text className="text-muted">
+                    Upload a logo image for the public site. Recommended size:
+                    200x50px.
+                  </Form.Text>
+                </Form.Group>
+              </Col> */}
+            {/* <Col md={4}>
+                {siteLogo && (
+                  <div>
+                    <p>Current Logo:</p>
+                    <img
+                      src={siteLogo}
+                      alt="Site Logo"
+                      style={{ maxHeight: "50px", maxWidth: "200px" }}
+                    />
+                  </div>
+                )}
+              </Col>
+            </Row> */}
+            <Row className="d-flex align-items-center mb-4">
+              <Col md={3}>
+                <Form.Group controlId="color">
+                  <input
+                    type="color"
+                    className="form-control form-control-sm"
+                    value={siteColor}
+                    onChange={(e) => setSiteColor(e.target.value)}
+                  />
+                </Form.Group>
               </Col>
             </Row>
           </Row>,
@@ -1412,32 +1660,6 @@ const Store = () => {
                 onChange={handleMqttStatusChange}
                 className="mb-0"
               />
-            </Col>
-          </Row>,
-        )}
-
-        {/* Strict Mode Section */}
-        {renderAccordion(
-          "Strict Mode",
-          <Row className="d-flex align-items-center mb-2">
-            <Col md={3} className="d-flex align-items-center gap-2">
-              <Form.Check
-                type="switch"
-                id="allow-orders-from-allowed-post-codes"
-                label=" Only Allow Orders from Delivery Configuraton Post Codes"
-                checked={allowOrdersFromAllowedPostCodes}
-                onChange={(e) => {
-                  setAllowOrdersFromAllowedPostCodes(e.target.checked);
-                }}
-                className="mb-0"
-              />
-            </Col>
-            <Col md={3}>
-              <p>
-                Disabling this will allow orders from any post code. Make sure
-                to set up the delivery configuration before disabling this
-                feature.
-              </p>
             </Col>
           </Row>,
         )}

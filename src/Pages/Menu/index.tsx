@@ -96,8 +96,15 @@ const Menu = () => {
   });
   const [isRestrictedPostalCode, setIsRestrictedPostalCode] =
     useState<boolean>(false);
+  const [disableDelivery, setDisableDelivery] = useState(false);
+  const [disablePickup, setDisablePickup] = useState(false);
 
   const hasItemsinCart = booking.items.length > 0;
+  const categories = useAppSelector((x) => x.Home.categories);
+  const store_id = useAppSelector((x) => x.Home.selected_store) as any;
+  const store_slug = useAppSelector(
+    (x) => x.Home.stores.find((x) => x.id == store_id)?.slug,
+  ) as any;
 
   // Find currency symbol from the settings object
   useEffect(() => {
@@ -129,11 +136,24 @@ const Menu = () => {
     }
   }, [settings]);
 
-  const categories = useAppSelector((x) => x.Home.categories);
-  const store_id = useAppSelector((x) => x.Home.selected_store) as any;
-  const store_slug = useAppSelector(
-    (x) => x.Home.stores.find((x) => x.id == store_id)?.slug,
-  ) as any;
+  // Sync Delivery Options
+  useEffect(() => {
+    const findAllowDelivery = settings.find(
+      (x) => x.key === "disable_delivery",
+    );
+    if (findAllowDelivery?.value) {
+      const parsedAllowDelivery = JSON.parse(findAllowDelivery.value);
+      if (parsedAllowDelivery) setDisableDelivery(parsedAllowDelivery);
+    }
+  }, [settings]);
+
+  useEffect(() => {
+    const findAllowPickup = settings.find((x) => x.key === "disable_pickup");
+    if (findAllowPickup?.value) {
+      const parsedAllowPickup = JSON.parse(findAllowPickup.value);
+      if (parsedAllowPickup) setDisablePickup(parsedAllowPickup);
+    }
+  }, [settings]);
 
   const findMatchingDelivery = (postCode: any, deliveryConfiguration: any) => {
     // Normalize: keep the space!
@@ -361,7 +381,7 @@ const Menu = () => {
       if (matches.length > 1) {
         const otherMatches = matches
           .slice(1, 4)
-          .map((m:any) => m.config.code + ` (${m.matchType})`);
+          .map((m: any) => m.config.code + ` (${m.matchType})`);
         console.log(
           `   Other matches: ${otherMatches.join(", ")}${matches.length > 4 ? `, +${matches.length - 4} more` : ""}`,
         );
@@ -928,6 +948,18 @@ const Menu = () => {
       return dispatch(setToast({ type: "error", message: "Cart Empty!" }));
     }
 
+    if (disableDelivery && booking.header.order_type === "Delivery") {
+      return dispatch(
+        setToast({ type: "error", message: "Delivery is disabled." }),
+      );
+    }
+
+    if (disablePickup && booking.header.order_type === "Pick Up") {
+      return dispatch(
+        setToast({ type: "error", message: "Pickup is disabled." }),
+      );
+    }
+
     if (booking.header.order_type === "Delivery") {
       if (
         isPostalCodeMatched.isMatched &&
@@ -1332,8 +1364,6 @@ const Menu = () => {
               },
             }),
           );
-          // setAddressResults(result);
-          // setShowAddressModal(true);
         }
         dispatch(toggleLoader(false));
       } catch (err) {
@@ -1462,6 +1492,8 @@ const Menu = () => {
       }),
     );
   };
+
+  // Time Zone
 
   const [timeZone, setTimeZone] = useState<string>("UTC"); // default fallback
   console.log("Resolved timezone:", timeZone);
@@ -1706,6 +1738,8 @@ const Menu = () => {
     group: null,
     mod: null,
   });
+
+  // Opened Linked Modifier Group
 
   const handleClickToOpenModifierGroup = (x: CartItem, y: any) => {
     let found: {
@@ -2009,6 +2043,8 @@ const Menu = () => {
                   onBack={goBack}
                   getPostCodeDetails={getPostCodeDetails}
                   getPhoneNumberDetails={getPhoneNumberDetails}
+                  disableDelivery={disableDelivery}
+                  disablePickup={disablePickup}
                 />
               ) : (
                 <div className="menu-panel">
@@ -2858,12 +2894,16 @@ export const CheckOut = ({
   onChange,
   getPostCodeDetails,
   getPhoneNumberDetails,
+  disableDelivery,
+  disablePickup,
 }: {
   onBack: () => void;
   bookingHeader: BookingHeader;
   onChange: (field: keyof BookingHeader, value: any) => void;
   getPostCodeDetails: (post_code: string) => void;
   getPhoneNumberDetails: (phone_number: string) => void;
+  disableDelivery: boolean;
+  disablePickup: boolean;
 }) => {
   const orderTypes = [
     {
@@ -2906,26 +2946,70 @@ export const CheckOut = ({
                   style={{ gap: "0.5rem" }}
                 >
                   {orderTypes.map((type) => {
+                    const isDisabled =
+                      (type.value === "Delivery" && disableDelivery) ||
+                      (type.value === "Pick Up" && disablePickup);
                     const isSelected = bookingHeader.order_type === type.value;
+
                     return (
-                      <div
+                      <Button
                         key={type.value}
-                        className={` d-flex flex-column align-items-center  px-3 py-2 rounded-top ${
-                          isSelected
-                            ? "border-bottom border-3 border-primary bg-secondary"
-                            : "bg-light"
-                        }`}
+                        className={`d-flex flex-column align-items-center justify-content-center px-4 py-3 rounded-3 ${
+                          isSelected && !isDisabled
+                            ? "bg-primary text-white shadow-lg border-primary"
+                            : "bg-white text-dark border-2 border-light-subtle"
+                        } ${isDisabled ? "opacity-50" : "hover-shadow"}`}
                         style={{
                           flex: 1,
+                          minHeight: "80px",
+                          transition: "all 0.3s ease",
+                          transform:
+                            isSelected && !isDisabled
+                              ? "scale(1.02)"
+                              : "scale(1)",
+                          cursor: isDisabled ? "not-allowed" : "pointer",
+                          opacity: isDisabled ? 0.5 : 1,
                         }}
-                        onClick={() => onChange("order_type", type.value)}
+                        onClick={() => {
+                          if (!isDisabled) {
+                            onChange("order_type", type.value);
+                          }
+                        }}
+                        disabled={isDisabled}
                       >
-                        <div className="text-center">
-                          <div className="mb-1">{type.icon}</div>
-                          <strong>{type.label}</strong>
-                          <div className="text-muted small">{type.time}</div>
+                        <div className="text-center w-100">
+                          <div
+                            className={`mb-2 ${isSelected && !isDisabled ? "text-white" : "text-primary"}`}
+                            style={{ fontSize: "2rem" }}
+                          >
+                            {type.icon}
+                          </div>
+                          <strong
+                            className={`d-block mb-1 ${isSelected && !isDisabled ? "text-white" : "text-dark"}`}
+                          >
+                            {type.label}
+                          </strong>
+                          <div
+                            className={`small ${isSelected && !isDisabled ? "text-white-50" : "text-muted"}`}
+                          >
+                            {type.time}
+                          </div>
+                          {isSelected && !isDisabled && (
+                            <div className="mt-2">
+                              <span className="badge bg-white text-primary rounded-pill px-3 py-1">
+                                Selected
+                              </span>
+                            </div>
+                          )}
+                          {isDisabled && (
+                            <div className="mt-2">
+                              <span className="badge bg-secondary text-white rounded-pill px-3 py-1">
+                                Disabled
+                              </span>
+                            </div>
+                          )}
                         </div>
-                      </div>
+                      </Button>
                     );
                   })}
                 </div>
@@ -3053,51 +3137,4 @@ export const CheckOut = ({
   );
 };
 
-interface AddressModalProps {
-  show: boolean;
-  onHide: () => void;
-  addresses: any[];
-  onSelect: (address: any) => void;
-}
-
-const AddressModal = ({
-  show,
-  onHide,
-  addresses,
-  onSelect,
-}: AddressModalProps) => {
-  return (
-    <Modal show={show} onHide={onHide} centered size="lg">
-      <Modal.Header closeButton>
-        <Modal.Title>Select an Address</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <div className="d-flex flex-wrap gap-2">
-          {addresses.map((address, idx) => {
-            const label = address.building_number || address.line_1;
-            return (
-              <div
-                key={idx}
-                className="p-3 border rounded bg-light cursor-pointer text-center flex-grow-1"
-                style={{
-                  minWidth: "140px",
-                  flex: "1 1 45%",
-                  cursor: "pointer",
-                }}
-                onClick={() => onSelect(address)}
-              >
-                <strong>{label}</strong>
-              </div>
-            );
-          })}
-        </div>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
-          Cancel
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
-};
 export default Menu;

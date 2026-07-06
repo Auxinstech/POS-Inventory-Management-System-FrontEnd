@@ -1,6 +1,5 @@
 // const API_URL = "https://auxinstech.com/pos/public/api/";
-// const API_URL = "https://pos.foodslift.com/backend_prod/public/api/"; // production
-const API_URL = "http://localhost:8001/api/"; // local development
+const API_URL = "https://pos.foodslift.com/backend_prod/public/api/";
 
 const API_URL_Stage = "https://foodslift.com/backend/public/api/";
 const API_URL_Prod = "https://pos.foodslift.com/backend_prod/public/api/";
