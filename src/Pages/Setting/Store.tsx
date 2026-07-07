@@ -231,10 +231,12 @@ const Store = () => {
   const [allowOrdersFromAllowedPostCodes, setAllowOrdersFromAllowedPostCodes] =
     useState(false);
 
+  const [allowPreOrders, setAllowPreOrders] = useState(false);
+
   // Public Site
   const [siteLogo, setSiteLogo] = useState("");
   const [siteColor, setSiteColor] = useState("#000000");
-  console.log(siteLogo);
+  const [siteBG, setSiteBG] = useState("");
 
   // --------------------------------------------------------------------------
   // Helper Functions
@@ -284,6 +286,14 @@ const Store = () => {
     if (findAllowPickup?.value) {
       const parsedAllowPickup = JSON.parse(findAllowPickup.value);
       if (parsedAllowPickup) setDisablePickup(parsedAllowPickup);
+    }
+  }, [settings]);
+
+  useEffect(() => {
+    const findAllowPreorder = settings.find((x) => x.key === "allow_preorder");
+    if (findAllowPreorder?.value) {
+      const parsedAllowPreorder = JSON.parse(findAllowPreorder.value);
+      if (parsedAllowPreorder) setAllowPreOrders(parsedAllowPreorder);
     }
   }, [settings]);
 
@@ -397,6 +407,13 @@ const Store = () => {
     const siteLogo = settings.find((x) => x.key === "public_site_logo");
     if (siteLogo?.value) {
       setSiteLogo(siteLogo.value);
+    }
+  }, [settings]);
+
+  useEffect(() => {
+    const sitebg = settings.find((x) => x.key === "public_site_bg");
+    if (sitebg?.value) {
+      setSiteBG(sitebg.value);
     }
   }, [settings]);
 
@@ -954,6 +971,30 @@ const Store = () => {
     );
   };
 
+  const handleSavePublicSiteBG = async () => {
+    await dispatch(
+      changeSetting({
+        key: "public_site_bg",
+        value: siteBG,
+        status: "active",
+        store_id: 0,
+        user_id: 0,
+      }),
+    );
+  };
+
+  const handleSaveAllowPreOrders = async () => {
+    await dispatch(
+      changeSetting({
+        key: "allow_preorder",
+        value: allowPreOrders.toString(),
+        status: "active",
+        store_id: 0,
+        user_id: 0,
+      }),
+    );
+  };
+
   // Master Save Handler
   const handleSaveAllSettings = async () => {
     await handleSaveServiceCharges();
@@ -975,6 +1016,8 @@ const Store = () => {
     await handleSaveSiteColor();
     await handleSaveDisableDelivery();
     await handleSaveDisablePickup();
+    await handleSavePublicSiteBG();
+    await handleSaveAllowPreOrders();
   };
 
   // Helper function to render accordion sections
@@ -1455,6 +1498,23 @@ const Store = () => {
                 </p>
               </Col>
             </Row>
+            <Row className="d-flex align-items-center mb-2">
+              <Col md={6} className="d-flex align-items-center gap-2">
+                <Form.Check
+                  type="switch"
+                  id="allow-preorder"
+                  label="Allow Pre Orders"
+                  checked={allowPreOrders}
+                  onChange={(e) => {
+                    setAllowPreOrders(e.target.checked);
+                  }}
+                  className="mb-0"
+                />
+              </Col>
+              <Col md={6}>
+                <p>Enabling this will allow pre orders from public website.</p>
+              </Col>
+            </Row>
             ,
           </Row>,
         )}
@@ -1487,6 +1547,35 @@ const Store = () => {
                       src={siteLogo}
                       alt="Site Logo"
                       style={{ maxHeight: "50px", maxWidth: "200px" }}
+                    />
+                  </div>
+                )}
+              </Col>
+            </Row>
+
+            <Row className="mb-3">
+              <Col md={4}>
+                <Form.Group>
+                  <Form.Label>Public Site Background URL</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter Background URL (e.g., https://example.com/background.png)"
+                    value={siteBG}
+                    onChange={(e) => setSiteBG(e.target.value)}
+                  />
+                  <Form.Text className="text-muted">
+                    Enter the URL of your background image.
+                  </Form.Text>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                {siteBG && (
+                  <div>
+                    <p>Current Background:</p>
+                    <img
+                      src={siteBG}
+                      alt="Site BG"
+                      style={{ maxHeight: "100px", maxWidth: "200px" }}
                     />
                   </div>
                 )}
@@ -1534,6 +1623,7 @@ const Store = () => {
             <Row className="d-flex align-items-center mb-4">
               <Col md={3}>
                 <Form.Group controlId="color">
+                  <p>Site Main Color</p>
                   <input
                     type="color"
                     className="form-control form-control-sm"

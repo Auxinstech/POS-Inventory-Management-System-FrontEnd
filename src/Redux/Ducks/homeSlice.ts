@@ -73,6 +73,9 @@ export interface BookingHeader {
   source: string;
   discount: number;
   status?: string;
+
+  is_preorder: boolean;
+  preorder_schedule: string;
 }
 
 export interface Booking {
@@ -142,6 +145,8 @@ const InitialState: IHome = {
       order_type: "Delivery",
       source: "pos",
       discount: 0,
+      is_preorder: false,
+      preorder_schedule: "",
     },
     items: [],
   },
@@ -859,6 +864,9 @@ const HomeSlice = createSlice({
             order_type: "Delivery",
             source: "pos",
             discount: 0,
+
+            is_preorder: false,
+            preorder_schedule: "",
           },
           items: [],
         };
