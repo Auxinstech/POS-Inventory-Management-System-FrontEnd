@@ -54,48 +54,52 @@ export default function Verify() {
   };
 
   return (
-    <Container fluid className="login-container">
-      <div className="bg-wrapper" />
-
-      <div className="login-form-container">
-        <div className="login-logo">
-          <img
-            src={require("../../Assets/Images/FoodLift-Red.png")}
-            alt="FoodsLift"
-            height="120"
-            className="rounded"
-          />{" "}
-        </div>
-        <div className="login-text">
-          <h6>Verify</h6>
-          <span>Enter the code sent to your inbox</span>
-        </div>
-
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleVerify();
-          }}
-          className="w-100"
-        >
-          <Form.Group className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Enter OTP"
-              value={model.otp}
-              onChange={(e) => onChange("otp", e.target.value)}
+    <Container fluid className="login-page-bg">
+      <div className="login-card">
+        <div className="login-panel-left">
+          <div className="brand-mark">
+            <img
+              src={require("../../Assets/Images/pos-logo.png")}
+              alt="POS Sales Management System"
             />
-          </Form.Group>
-          <Button variant="primary" onClick={handleVerify}>
-            Verify
-          </Button>
-          <Button variant="info" onClick={signIn} className="mt-2">
-            Reset OTP
-          </Button>
-        </Form>
-      </div>
+            <span>POS Sales</span>
+          </div>
+          <div className="login-text">
+            <h6>Verify</h6>
+            <span>Enter the code sent to your inbox</span>
+          </div>
 
-      <div className="footer">© 2025 My Food Hub. All rights reserved.</div>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleVerify();
+            }}
+            className="w-100"
+          >
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder="Enter OTP"
+                value={model.otp}
+                onChange={(e) => onChange("otp", e.target.value)}
+              />
+            </Form.Group>
+            <Button variant="primary" onClick={handleVerify}>
+              Verify
+            </Button>
+            <Button variant="info" onClick={signIn} className="mt-2">
+              Reset OTP
+            </Button>
+          </Form>
+          <div className="footer">© 2026 POS Sales Management System. All rights reserved.</div>
+        </div>
+        <div className="login-panel-right">
+          <img
+            src={require("../../Assets/Images/login-wood-panel.jpg")}
+            alt=""
+          />
+        </div>
+      </div>
     </Container>
   );
 }

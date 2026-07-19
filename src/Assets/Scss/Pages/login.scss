@@ -1,70 +1,138 @@
-.login-container {
+.login-page-bg {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background-image: url(../../Images/login-bg.jpg);
-    background-repeat: no-repeat;
+    background-image: url(../../Images/login-page-bg.jpg);
     background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 40px 20px;
 
-    .bg-wrapper {
-        width: 100vw;
-        height: 100vh;
-        position: absolute;
-        top: 0;
-        left: 0;
-        background: #00AC7C;
-        z-index: 5;
-        opacity: 0.4;
+    .login-card {
+        display: flex;
+        width: 100%;
+        max-width: 980px;
+        min-height: 620px;
+        background: #FAF6EF;
+        border-radius: 28px;
+        box-shadow: 0 40px 90px rgba(10, 6, 4, 0.55);
+        overflow: hidden;
     }
 
-    .login-form-container {
-        background: #fff;
-        padding: 30px 30px;
-        border-radius: 10px;
-        z-index: 10;
+    .login-panel-left {
+        flex: 1;
+        min-width: 320px;
         display: flex;
-        align-items: center;
-        justify-content: center;
         flex-direction: column;
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-        min-width: 300px;
-        max-width: 400px;
+        justify-content: center;
+        padding: 56px 56px;
 
-        .login-logo {
-            text-align: center;
-            margin-bottom: 30px;
+        .brand-mark {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 48px;
+
+            img {
+                height: 34px;
+                width: 34px;
+                border-radius: 8px;
+            }
+
+            span {
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: 20px;
+                font-weight: 700;
+                color: #2B1B10;
+                letter-spacing: 0.3px;
+            }
         }
 
         .login-text {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
 
             h6 {
-                font-size: 18px;
-                margin: 0;
+                font-family: Georgia, "Times New Roman", serif;
+                font-size: 30px;
+                font-weight: 700;
+                color: #2B1B10;
+                margin-bottom: 8px;
             }
 
             span {
                 font-size: 14px;
-                color: #575757;
+                color: #6B5B4C;
             }
         }
 
-        .btn {
+        form {
             width: 100%;
+        }
+
+        .form-control {
+            border: 1px solid #DED4C2;
+            background: #FFFDFA;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 14px;
+
+            &:focus {
+                border-color: #A86E3A;
+                box-shadow: 0 0 0 3px rgba(168, 110, 58, 0.15);
+            }
+        }
+
+        .btn.btn-primary {
+            width: 100%;
+            background: #2B2118;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 15px;
+            font-weight: 600;
+
+            &:hover,
+            &:focus {
+                background: #40301f;
+            }
+        }
+
+        .btn.btn-info {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #DED4C2;
+            color: #6B5B4C;
+            border-radius: 10px;
+
+            &:hover {
+                background: #F2ECE1;
+            }
+        }
+    }
+
+    .login-panel-right {
+        flex: 1;
+        min-width: 320px;
+        position: relative;
+        display: none;
+
+        @media (min-width: 860px) {
+            display: block;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
     }
 
     .footer {
-        position: fixed;
-        bottom: 0;
-        padding: 15px 0px;
-        color: #fff;
-        z-index: 10;
+        margin-top: 28px;
         font-size: 12px;
+        color: #9C8D7C;
+        text-align: left;
     }
 }

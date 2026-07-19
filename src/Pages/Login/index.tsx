@@ -45,43 +45,48 @@ export default function Login() {
   };
 
   return (
-    <Container fluid className="login-container">
-      <div className="bg-wrapper" />
-      <div className="login-form-container">
-        <div className="login-logo">
+    <Container fluid className="login-page-bg">
+      <div className="login-card">
+        <div className="login-panel-left">
+          <div className="brand-mark">
+            <img
+              src={require("../../Assets/Images/pos-logo.png")}
+              alt="POS Sales Management System"
+            />
+            <span>POS Sales</span>
+          </div>
+          <div className="login-text">
+            <h6>Welcome Back</h6>
+            <span>Enter your email to receive a code in your inbox</span>
+          </div>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              signIn();
+            }}
+            className="w-100"
+          >
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder="Enter Email"
+                value={model.email}
+                onChange={(e) => onChange("email", e.target.value)}
+              />
+            </Form.Group>
+            <Button variant="primary" onClick={signIn}>
+              Next
+            </Button>
+          </Form>
+          <div className="footer">© 2026 POS Sales Management System. All rights reserved.</div>
+        </div>
+        <div className="login-panel-right">
           <img
-            src={require("../../Assets/Images/FoodLift-Red.png")}
-            alt="Foodslift"
-            height="120"
-            className="rounded"
+            src={require("../../Assets/Images/login-wood-panel.jpg")}
+            alt=""
           />
         </div>
-        <div className="login-text">
-          <h6>Login</h6>
-          <span>Enter your email to receive a code in your inbox</span>
-        </div>
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            signIn();
-          }}
-          className="w-100"
-        >
-          <Form.Group className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Enter Email"
-              value={model.email}
-              onChange={(e) => onChange("email", e.target.value)}
-            />
-          </Form.Group>
-          <Button variant="primary" onClick={signIn}>
-            Next
-          </Button>
-        </Form>
       </div>
-
-      <div className="footer">© 2025 My Food Hub. All rights reserved.</div>
     </Container>
   );
 }

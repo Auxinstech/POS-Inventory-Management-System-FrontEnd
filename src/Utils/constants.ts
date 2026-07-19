@@ -1,9 +1,4 @@
-// const API_URL = "https://auxinstech.com/pos/public/api/";
-// const API_URL = "https://pos.foodslift.com/backend_prod/public/api/"; // production
 const API_URL = "http://localhost:8001/api/"; // local development
-
-const API_URL_Stage = "https://foodslift.com/backend/public/api/";
-const API_URL_Prod = "https://pos.foodslift.com/backend_prod/public/api/";
 
 const POSTAL_CODE_API_KEY = "ak_mct3xfjnPixcB0WoKgkmGxB0b4hZH";
 const POSTAL_CODE_API_URL = "https://api.ideal-postcodes.co.uk/v1/postcodes/";

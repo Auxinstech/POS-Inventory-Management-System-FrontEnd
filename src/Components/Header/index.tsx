@@ -10,18 +10,11 @@ const Header = () => {
     <Navbar className="header" expand="lg" bg="white">
       <Container fluid>
         <Navbar.Brand className="d-flex align-items-center gap-3">
-          {/* <img
-            alt=""
-            src={require("../../Assets/Images/FoodLift-Red.png")}
-            height="50px"
-            width="58px"
-            className="d-inline-block align-top rounded"
-          />{" "} */}
           <img
-            alt=""
-            src={require("../../Assets/Images/foodslift.png")}
+            alt="POS Sales Management System"
+            src={require("../../Assets/Images/pos-logo.png")}
             height="50px"
-            width="90px"
+            width="50px"
             className="d-inline-block align-top rounded"
           />{" "}
         </Navbar.Brand>
