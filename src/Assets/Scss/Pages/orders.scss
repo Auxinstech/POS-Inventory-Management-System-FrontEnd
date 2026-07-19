@@ -365,6 +365,30 @@ $pulse-to: #32b332;
   }
 }
 
+// --- Soft pulse (gentler) for preorder ---
+$pulse-preorder-from: #accdff;
+$pulse-preorder-to: #4686fd;
+
+@keyframes pulse-bg-preorder {
+  0%,
+  100% {
+    background-color: $pulse-preorder-from;
+  }
+  50% {
+    background-color: $pulse-preorder-to;
+  }
+}
+
+.pulse-bg-preorder {
+  animation: pulse-bg-preorder 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-bg-preorder {
+    animation: none;
+  }
+}
+
 // --- Hard blink (on/off) ---
 $green-on: #b7f7c0; // brighter green
 $green-off: #e9fcef; // pale green

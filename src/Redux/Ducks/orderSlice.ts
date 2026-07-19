@@ -36,6 +36,9 @@ export interface Order {
   rider_id: number | null;
   rider: OrderRider;
   is_refund: number;
+
+  is_preorder: boolean;
+  preorder_schedule: string;
 }
 
 export interface OrderRider {
@@ -137,6 +140,8 @@ const InitialState: ISetting = {
       order_type: "Delivery",
       source: "pos",
       discount: 0,
+      is_preorder: false,
+      preorder_schedule: "",
     },
     items: [],
   },
@@ -149,7 +154,7 @@ const OrderSlice = createSlice({
   reducers: {
     getOrders(
       state,
-      action: PayloadAction<{ store_id: number; day: string }>
+      action: PayloadAction<{ store_id: number; day: string }>,
     ) {},
     setOrders(state, action: PayloadAction<Order[]>) {
       return produce(state, (draftState) => {
@@ -159,7 +164,7 @@ const OrderSlice = createSlice({
     },
     getOrdersReport(
       state,
-      action: PayloadAction<{ store_id: number; day: string }>
+      action: PayloadAction<{ store_id: number; day: string }>,
     ) {},
     setOrdersReport(state, action: PayloadAction<Order[]>) {
       return produce(state, (draftState) => {
@@ -174,7 +179,7 @@ const OrderSlice = createSlice({
           number,
           string,
           { onSuccess?: () => void } | undefined
-        >
+        >,
       ) => {
         // No state mutation here
       },
@@ -188,7 +193,7 @@ const OrderSlice = createSlice({
     setRemoveOrder: (state, action: PayloadAction<number>) => {
       return produce(state, (draftState) => {
         const index = draftState.orders.findIndex(
-          (order) => order.id === action.payload
+          (order) => order.id === action.payload,
         );
         if (index !== -1) {
           draftState.orders.splice(index, 1);
@@ -238,7 +243,7 @@ const OrderSlice = createSlice({
         if (action.payload === "Refunded") {
           if (draftState.active_order_refund) {
             const idx = draftState.orders_by_id.findIndex(
-              (x) => x.id == (draftState.active_order_refund as any).id
+              (x) => x.id == (draftState.active_order_refund as any).id,
             );
             if (idx != -1) {
               draftState.orders_by_id[idx].is_refund = 1;
@@ -250,7 +255,7 @@ const OrderSlice = createSlice({
         } else {
           if (draftState.active_order) {
             const idx = draftState.orders.findIndex(
-              (x) => x.id == (draftState.active_order as any).id
+              (x) => x.id == (draftState.active_order as any).id,
             );
             if (idx != -1) {
               draftState.orders[idx].status = action.payload;
@@ -305,6 +310,8 @@ const OrderSlice = createSlice({
           comment: action.payload.comment || "",
           order_type: action.payload.order_type,
           source: action.payload.source,
+          is_preorder: action.payload.is_preorder,
+          preorder_schedule: action.payload.preorder_schedule,
         };
 
         // Assign items array properly
@@ -332,14 +339,17 @@ const OrderSlice = createSlice({
         order_type: "Delivery",
         source: "pos",
         discount: 0,
+        is_preorder: false,
+        preorder_schedule: "",
       };
+
       state.EditOrderItem.items = [];
     },
     assignRider(state, action: PayloadAction<number | null>) {
       return produce(state, (draftState) => {
         if (draftState.active_order) {
           const idx = draftState.orders.findIndex(
-            (x) => x.id == (draftState.active_order as any).id
+            (x) => x.id == (draftState.active_order as any).id,
           );
           if (idx != -1) {
             draftState.orders[idx].rider_id = action.payload;

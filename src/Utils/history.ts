@@ -1,7 +1,7 @@
-import { createBrowserHistory } from "history";
+import { BrowserHistory, createBrowserHistory } from "history";
 import { createReduxHistoryContext } from "redux-first-history";
 
-const browserHistory = createBrowserHistory();
+const browserHistory: BrowserHistory = createBrowserHistory();
 
 const {
     createReduxHistory,

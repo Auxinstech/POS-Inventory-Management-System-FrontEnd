@@ -366,6 +366,24 @@ const Orders = () => {
                       {active_order.source === "pos" ? "POS" : "Website"}
                     </Col>
                   </Row>
+
+                  <Row className="order-details-row">
+                    <Col
+                      md="6"
+                      className="order-details-label"
+                      style={{ fontSize: "14px" }}
+                    >
+                      Pre Order
+                    </Col>
+                    <Col
+                      md="6"
+                      className="order-details-value"
+                      style={{ fontSize: "14px" }}
+                    >
+                      {/* {active_order.is_preorder === true ? "Yes" : "No"} */}
+                      {active_order.preorder_schedule || "No"}
+                    </Col>
+                  </Row>
                   <Row className="order-details-row">
                     <Col
                       md="6"
@@ -625,6 +643,10 @@ const Orders = () => {
                         Source :{" "}
                         {active_order.source === "pos" ? "POS" : "Website"}
                       </span>
+
+                      <span>
+                        Pre Order : {active_order.preorder_schedule || "No"}
+                      </span>
                       {active_order.status === "Assigned" && (
                         <span>
                           Driver :{" "}
@@ -868,7 +890,13 @@ const Orders = () => {
                       .map((order, index) => (
                         <div
                           className={`order-item ${
-                            order.status === "Pending" && "pulse-bg"
+                            order.status === "Pending" &&
+                            !order.is_preorder &&
+                            "pulse-bg"
+                          } ${
+                            order.status === "Pending" &&
+                            order.is_preorder &&
+                            "pulse-bg-preorder"
                           }`}
                           onClick={() => openOrder(order)}
                         >
